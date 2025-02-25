@@ -29,6 +29,10 @@ jobs:
           latexmk_shell_escape: true
           extra_system_packages: "biber"
           work_in_root_file_dir: true
+          pre_compile: |
+            xelatex main
+            biber main
+            xelatex main
 
       - name: Commit and push PDF
         run: |

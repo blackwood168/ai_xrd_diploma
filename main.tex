@@ -22,7 +22,7 @@
 \begin{document}
 
 % Front matter
-\frontmatter
+\pagenumbering{roman}
 \maketitle
 \include{chapters/abstract}
 \tableofcontents
@@ -30,7 +30,8 @@
 \listoftables
 
 % Main matter
-\mainmatter
+\cleardoublepage
+\pagenumbering{arabic}
 \include{chapters/introduction}
 \include{chapters/literature_review}
 \include{chapters/methodology}
@@ -38,7 +39,7 @@
 \include{chapters/conclusion}
 
 % Back matter
-\backmatter
+\cleardoublepage
 \printbibliography
 
 \end{document} 
