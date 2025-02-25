@@ -1,0 +1,70 @@
+\begin{thebibliography}{1}
+\def\selectlanguageifdefined#1{
+\expandafter\ifx\csname date#1\endcsname\relax
+\else\selectlanguage{#1}\fi}
+\providecommand*{\href}[2]{{\small #2}}
+\providecommand*{\url}[1]{{\small #1}}
+\providecommand*{\BibUrl}[1]{\url{#1}}
+\providecommand{\BibAnnote}[1]{}
+\providecommand*{\BibEmph}[1]{#1}
+\ProvideTextCommandDefault{\cyrdash}{\iflanguage{russian}{\hbox
+  to.8em{--\hss--}}{\textemdash}}
+\providecommand*{\BibDash}{\ifdim\lastskip>0pt\unskip\nobreak\hskip.2em plus
+  0.1em\fi
+\cyrdash\hskip.2em plus 0.1em\ignorespaces}
+\renewcommand{\newblock}{\ignorespaces}
+
+\bibitem{giro}
+\selectlanguageifdefined{english}
+Girolami~G.~S. X-ray Crystallography. \BibDash
+\newblock University Science Books, 2016.
+
+\bibitem{xrdsap}
+\selectlanguageifdefined{english}
+Gawas~U.~B., Mandrekar~V.~K., and Majik~M.~S. Structural analysis of proteins
+  using X-ray diffraction technique~// \BibEmph{Advances in Biological Science
+  Research}. \BibDash
+\newblock 2019.
+
+\bibitem{acta}
+\selectlanguageifdefined{english}
+Margiolaki~I. and Wright~J.~P. {Powder crystallography on macromolecules}~//
+  \BibEmph{Acta Crystallographica Section A}. \BibDash
+\newblock 2008. \BibDash
+\newblock Vol.~64, no.~1. \BibDash
+\newblock P.~169--180.
+
+\bibitem{science}
+\selectlanguageifdefined{english}
+Larsen~A.~S., Rekis~T., and Madsen~A.~Ã. PhAI: A deep-learning approach to
+  solve the crystallographic phase problem~// \BibEmph{Science}. \BibDash
+\newblock 2024. \BibDash
+\newblock Vol. 385, no. 6708. \BibDash
+\newblock P.~522--528.
+
+\bibitem{review_physics}
+\selectlanguageifdefined{english}
+Wang~K., Song~L., and Wang~C. e.~a. On the use of deep learning for phase
+  recovery~// \BibEmph{Light Sci Appl}. \BibDash
+\newblock 2024. \BibDash
+\newblock Vol.~13, no.~4.
+
+\bibitem{cctbx}
+\selectlanguageifdefined{english}
+Grosse-Kunstleve~R.~W., Sauter~N.~K., Moriarty~N.~W., and Adams~P.~D. {The {\it
+  Computational Crystallography Toolbox}: crystallographic algorithms in a
+  reusable software framework}~// \BibEmph{Journal of Applied Crystallography}.
+  \BibDash
+\newblock 2002. \BibDash
+\newblock Vol.~35, no.~1. \BibDash
+\newblock P.~126--136.
+
+\bibitem{csd}
+\selectlanguageifdefined{english}
+Groom~C.~R. and Allen~F.~H. The Cambridge Structural Database in Retrospect and
+  Prospect~// \BibEmph{Angewandte Chemie International Edition}. \BibDash
+\newblock 2014. \BibDash
+\newblock Vol.~3. \BibDash
+\newblock P.~662--671.
+
+\end{thebibliography}
