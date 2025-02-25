@@ -1,0 +1,44 @@
+\documentclass[12pt,a4paper]{report}
+
+% Essential packages
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amsfonts}
+\usepackage{amssymb}
+\usepackage[hidelinks]{hyperref}
+\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
+\usepackage[backend=biber,style=numeric]{biblatex}
+
+% Bibliography file
+\addbibresource{references.bib}
+
+% Title page information
+\title{Your Thesis Title}
+\author{Your Name}
+\date{\today}
+
+\begin{document}
+
+% Front matter
+\frontmatter
+\maketitle
+\include{chapters/abstract}
+\tableofcontents
+\listoffigures
+\listoftables
+
+% Main matter
+\mainmatter
+\include{chapters/introduction}
+\include{chapters/literature_review}
+\include{chapters/methodology}
+\include{chapters/results}
+\include{chapters/conclusion}
+
+% Back matter
+\backmatter
+\printbibliography
+
+\end{document} 
