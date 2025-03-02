@@ -1,45 +1,79 @@
-\documentclass[12pt,a4paper]{report}
+\documentclass[a4paper,12pt]{article}
 
-% Essential packages
+\usepackage{amsmath,amssymb,amsfonts,gensymb,mathtext,enumerate,float,cite}
+\usepackage[T2A]{fontenc}
 \usepackage[utf8]{inputenc}
-\usepackage[T1]{fontenc}
-\usepackage{graphicx}
-\usepackage{amsmath}
-\usepackage{amsfonts}
-\usepackage{amssymb}
-\usepackage[hidelinks]{hyperref}
-\usepackage[left=3cm,right=2cm,top=2cm,bottom=2cm]{geometry}
-\usepackage[backend=biber,style=numeric]{biblatex}
+\usepackage[english,russian]{babel}
+\usepackage{indentfirst}
+\usepackage[unicode=true]{hyperref}
+\usepackage{multirow}
+\usepackage{array}	
+\usepackage[dvips]{graphicx}
+\usepackage{xymtexpdf}
+\usepackage{cmap}
+\graphicspath{{figures/}}
 
-% Bibliography file
-\addbibresource{references.bib}
 
-% Title page information
-\title{Your Thesis Title}
-\author{Your Name}
-\date{\today}
 
+\usepackage{setspace}
+% полуторный интервал
+\onehalfspacing
+\usepackage[14pt]{extsizes}
+
+\hypersetup{
+pdfborder={0 0 0},
+pdfauthor={Khaibrakhmanov Artur Ilnurovich},
+pdftitle={Diploma},
+}
+
+\usepackage{geometry}\geometry{left=3cm}
+\geometry{right=2cm}
+\geometry{top=2cm}
+\geometry{bottom=2.5cm}
+
+\numberwithin{equation}{section}
+\numberwithin{figure}{section}
+\numberwithin{table}{section}
+
+\setcounter{tocdepth}{4}
+\setcounter{secnumdepth}{4}
+
+
+
+\RequirePackage{caption}
+\DeclareCaptionLabelSeparator{defffis}{ -- }
+\captionsetup{justification=centering,labelsep=defffis}
+\usepackage{subfigure}
+%\usepackage{subcaption}
+\renewcommand{\thesubfigure}{(\asbuk{subfigure})}
 \begin{document}
-
-% Front matter
-\pagenumbering{roman}
-\maketitle
-\include{chapters/abstract}
+\righthyphenmin=20
+\renewcommand{\figurename}{Рисунок}
+\input{title}
+\setcounter{page}{2}
+\renewcommand{\contentsname}{Оглавление}
+\sloppy{
 \tableofcontents
-\listoffigures
-\listoftables
 
-% Main matter
-\cleardoublepage
-\pagenumbering{arabic}
-\include{chapters/introduction}
-\include{chapters/literature_review}
-\include{chapters/methodology}
-\include{chapters/results}
-\include{chapters/conclusion}
+}
+\input{s}
+\input{chapters/introduction}
+\input{chapters/literature_review}
+\input{chapters/methodology}
+\input{chapters/results}
+%\input{z}
+\input{chapters/conclusion}
 
-% Back matter
-\cleardoublepage
-\printbibliography
+\newpage
+\sloppy{
+\addcontentsline{toc}{section}{Список литературы}
+%\bibliographystyle{gost71s}
+%\bibliographystyle{utf8gost705u}
+%\bibliographystyle{utf8gost71s}
+%\bibliographystyle{gost2008}
+\bibliographystyle{gost2008l}
+\bibliography{lit}
+%\input{appendix}
 
-\end{document} 
+}
+\end{document}
