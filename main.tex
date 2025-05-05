@@ -1,19 +1,20 @@
+%\RequirePackage{pdf14}
 \documentclass[a4paper,12pt]{article}
-
+\usepackage{cmap}
+%\usepackage[cp1251]{inputenc}
 \usepackage{amsmath,amssymb,amsfonts,gensymb,mathtext,enumerate,float,cite}
 \usepackage[T2A]{fontenc}
+\usepackage[russian, english]{babel}
 \usepackage[utf8]{inputenc}
-\usepackage[english,russian]{babel}
 \usepackage{indentfirst}
 \usepackage[unicode=true]{hyperref}
 \usepackage{multirow}
 \usepackage{array}	
 \usepackage[dvips]{graphicx}
 \usepackage{xymtexpdf}
-\usepackage{cmap}
+%\usepackage{newtxtext}
+%\usepackage{newtxmath}
 \graphicspath{{figures/}}
-
-
 
 \usepackage{setspace}
 % полуторный интервал
@@ -26,24 +27,28 @@ pdfauthor={Khaibrakhmanov Artur Ilnurovich},
 pdftitle={Diploma},
 }
 
-\usepackage{geometry}\geometry{left=3cm}
-\geometry{right=2cm}
+\usepackage{geometry}
+\geometry{left=2.5cm}
+\geometry{right=1.5cm}
 \geometry{top=2cm}
-\geometry{bottom=2.5cm}
-
+\geometry{bottom=2cm}
+\linespread{1.5}
 \numberwithin{equation}{section}
 \numberwithin{figure}{section}
 \numberwithin{table}{section}
 
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
-
+\usepackage{siunitx}
 \usepackage{diagbox}
 \RequirePackage{caption}
-\DeclareCaptionLabelSeparator{defffis}{ -- }
+\def\angstrom{\leavevmode\hbox{Å}}
+\DeclareCaptionLabelSeparator{defffis}{.~}
 \captionsetup{justification=centering,labelsep=defffis}
 \usepackage{subfigure}
-%\usepackage{subcaption}
+%\usepackage{polyglossia}
+%\setdefaultlanguage{russian}
+\usepackage{subcaption}
 \renewcommand{\thesubfigure}{(\asbuk{subfigure})}
 \begin{document}
 \righthyphenmin=20
@@ -76,6 +81,8 @@ pdftitle={Diploma},
 \bibliographystyle{gost2008l}
 \bibliography{lit}
 %\input{appendix}
-
+\newpage
+\addcontentsline{toc}{section}{Приложение}
+\input{chapters/appendix}
 }
 \end{document}
