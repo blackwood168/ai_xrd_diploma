@@ -1,5 +1,16 @@
 \section{Результаты и обсуждение}
 
+Основная же сложность работать с амплитудами структурных факторов - то есть с точками в обратном пространстве - заключается в том, что данные не являются локально связанными, как изображения. Это вносит специфику в данную задачу и создает трудности, так как типичные архитектуры моделей для работы с многомерными визуальными данными, например, видео или медицинскими данными \cite{forigua_superformer_2022}, могут не достигать требуемой задачей точности.
+
+\begin{figure*}[ht!]
+            \includegraphics[width=.3\textwidth]{figures/hk_plane_l_0.png}\hfill
+            \includegraphics[width=.3\textwidth]{figures/hl_plane_k_0.png}\hfill
+            \includegraphics[width=.3\textwidth]{figures/kl_plane_h_0.png}
+            \caption{Типичные сечения тензора отражений для реальных структур из CSD}
+            \label{locally}
+\end{figure*}
+
+
 \subsection{Разрешение 1.5\angstrom}
 
 \subsubsection{Результаты обучения}
