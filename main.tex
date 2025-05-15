@@ -3,6 +3,8 @@
 \usepackage{cmap}
 %\usepackage[cp1251]{inputenc}
 \usepackage{amsmath,amssymb,amsfonts,gensymb,mathtext,enumerate,float,cite}
+\DeclareMathOperator*{\argmax}{arg\,max}
+\DeclareMathOperator*{\argmin}{arg\,min}
 \usepackage[T2A]{fontenc}
 \usepackage[russian, english]{babel}
 \usepackage[utf8]{inputenc}
@@ -10,17 +12,20 @@
 \usepackage[unicode=true]{hyperref}
 \usepackage{multirow}
 \usepackage{array}	
+%\addto\captionsrussian{\def\refname{Список литературы}}
 \usepackage[dvips]{graphicx}
 \usepackage{xymtexpdf}
 %\usepackage{newtxtext}
 %\usepackage{newtxmath}
 \graphicspath{{figures/}}
-
+\usepackage{minted}
 \usepackage{setspace}
+\usepackage{pygmentex}
 % полуторный интервал
 \onehalfspacing
 \usepackage[12pt]{extsizes}
-
+\usepackage{xcolor} % to access the named colour LightGray
+\definecolor{LightGray}{gray}{0.9}
 \hypersetup{
 pdfborder={0 0 0},
 pdfauthor={Khaibrakhmanov Artur Ilnurovich},
@@ -42,9 +47,11 @@ pdftitle={Diploma},
 \usepackage{siunitx}
 \usepackage{diagbox}
 \RequirePackage{caption}
-\def\angstrom{\leavevmode\hbox{Å}}
+%\def\angstrom{\leavevmode\hbox{Å}}
+\def\angstrom{\hbox{\r{A}}}
 \DeclareCaptionLabelSeparator{defffis}{.~}
 \captionsetup{justification=centering,labelsep=defffis}
+\captionsetup[table]{name = Таблица}
 \usepackage{subfigure}
 %\usepackage{polyglossia}
 %\setdefaultlanguage{russian}

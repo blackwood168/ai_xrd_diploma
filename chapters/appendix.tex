@@ -1,5 +1,356 @@
 \section*{Приложение}
+\begin{center}
+Приложение 1. Общий вид скрипта для генерации структурных данных
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+SPACE_GROUPS = ['P21', 'C2']       
+ELEMENTS = ["C", "N", "O", "Cl", "Br"]
+N_ATOMS_LIMS = (10, 30)
+ATOM_VOLUME_START_WIDTH = (14, 8)
+d_high = 1.0  # High resolution limit
+d_low = 1.2   # Low resolution limit
+n_atoms = sample_gen(range(*N_ATOMS_LIMS))
 
+# Initialize structure generator
+str_generator = GenBuilder(
+    classname=core.CctbxStr.generate_packing,
+    sg=sample_gen(SPACE_GROUPS),
+    atoms=sample_gen(ELEMENTS, size=n_atoms),
+    atom_volume=distr_gen(sts.uniform(*ATOM_VOLUME_START_WIDTH)),
+    seed=utils.distr_gen(sts.randint(1, 2**32-1))
+)
+def runner(pattern):
+    """Process a single crystal structure pattern.
+    Args:
+        pattern: Crystal structure pattern object
+    Returns:
+        dict: Contains structure parameters and intensity data
+    """
+    ### Здесь разный код в зависимости от задачи ###
+    
+# Processing parameters
+CHANKS = 50
+CHANK_SIZE = 10000
+CORES = 12
+# Process structures in chunks
+for i in range(CHANKS):
+    chank = it.islice(str_generator, CHANK_SIZE)
+    pool = mp.Pool(CORES)   
+    with pool as p: results = p.map(runner, chank)
+    directory = f'...'
+    if not os.path.exists(directory): os.makedirs(directory)
+    # Save results
+    np.savez_compressed(f'{directory}/{i}',
+        db=np.array(results)
+    )
+    pool.close()        
+\end{minted}
+\newpage
 
+\begin{center}
+Приложение 2. Функция runner для расчета интенсивностей случайных структур
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+def runner(pattern):
+    """Process a single crystal structure pattern.
+    
+    Args:
+        pattern: Crystal structure pattern object
+        
+    Returns:
+        dict: Contains structure parameters and intensity data
+    """
+    params = pattern.report_params()
+    structure = pattern.structure
+    
+    # Calculate structure factors and intensities
+    a_high = structure.structure_factors(d_min=d_high).f_calc().sort()
+    I_high = a_high.as_intensity_array().data().as_numpy_array()
+    ind_high = np.array(list(a_high.indices()))
+    
+    a_low = structure.structure_factors(d_min=d_low).f_calc().sort()
+    ind_low = np.array(list(a_low.indices()))
+    
+    return {
+        'structure_params': params,
+        'ind_low': ind_low,
+        'I_high': I_high,
+        'ind_high': ind_high
+    }
+\end{minted}
+\newpage
 
-уга буга
+\begin{center}
+Приложение 3. Функция runner для расчета нормализованных структурных факторов случайных структур
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+def runner(pattern):
+    """Process a single crystal structure pattern.
+    
+    Args:
+        pattern: Crystal structure pattern object
+        
+    Returns:
+        dict: Contains structure parameters and intensity data
+    """
+    params = pattern.report_params()
+    structure = pattern.structure
+    
+    # Calculate structure factors and intensities
+    a_high = structure.structure_factors(d_min=d_high).f_calc().sort()
+    elements_to_parse = ['N', 'O', 'C', 'Cl', 'Br']
+    asu_content = {}
+    for scatterer in structure.scatterers():
+        for elem in elements_to_parse:
+            if scatterer.label == elem or scatterer.label.startswith(elem):
+                asu_content[elem] = asu_content.get(elem, 0) + 1
+    I_high = structure.structure_factors(d_min=d_high).f_calc().sort().as_intensity_array()
+    e_high = a_high.as_amplitude_array().normalised_amplitudes(asu_content).array().data()
+    e_high = e_high.as_numpy_array()
+    ind_high = np.array(list(a_high.indices()))
+    
+    a_low = structure.structure_factors(d_min=d_low).f_calc().sort()
+    e_low = a_low.as_amplitude_array().normalised_amplitudes(asu_content).array().data()
+    e_low = e_low.as_numpy_array()
+    ind_low = np.array(list(a_low.indices()))
+    
+    return {
+        'structure_params': params,
+        'ind_low': ind_low,
+        'I_high': I_high,
+        'ind_high': ind_high,
+        'e_high': e_high,
+        'e_low': e_low
+    }
+\end{minted}
+\newpage
+
+\begin{center}
+Приложение 4. Функция runner для расчета карт Паттерсона случайных структур
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+def runner(pattern):
+    """Process a single crystal structure pattern.
+    
+    Args:
+        pattern: Crystal structure pattern object
+        
+    Returns:
+        dict: Contains Patterson maps, structure parameters and intensity data
+    """
+    params = pattern.report_params()
+    structure = pattern.structure
+    
+    # Calculate structure factors
+    I_high = structure.structure_factors(d_min=d_high).f_calc().sort().as_intensity_array()
+    ind_high = np.array(list(I_high.indices()))
+    I_low = structure.structure_factors(d_min=d_low).f_calc().sort().as_intensity_array()
+    ind_low = np.array(list(I_low.indices()))
+    
+    patt_low = pu.calculate_patterson_fft(I_low.data().as_numpy_array(),
+    			miller_indices = ind_low, map_shape = (12,12,12))
+    patt_high = pu.calculate_patterson_fft(I_high.data().as_numpy_array(),
+    			miller_indices = ind_high, map_shape = (24,24,24))
+    assert patt_low.min() == 0 and patt_high.min() == 0
+    assert patt_low.max() == 1 and patt_high.max() == 1
+    
+    # Prepare intensity and index data
+    I_high = I_high.data().as_numpy_array()
+    I_low = I_low.data().as_numpy_array()
+    
+    return {
+        'patt_low': patt_low,
+        'patt_high': patt_high,
+        'structure_params': params,
+        'ind_low': ind_low,
+        'ind_high': ind_high
+    }
+\end{minted}
+\newpage
+
+\begin{center}
+Приложение 5. Общий вид скрипта для генерации случайных порошковых дифрактограмм
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+BKG_MAX_ORDER = 13
+BKG_MIN_ORDER = 2
+bkg_generator = ...
+SPACE_GROUPS = ["P-1", "P21/c", "C2/c", "Pbca", "I41"]
+ELEMENTS = ["C", "N", "O", "Cl"]
+N_ATOMS_LIMS = (3, 30)
+ATOM_VOLUME_START_WIDTH = (14, 8)
+n_atoms = sample_gen(range(*N_ATOMS_LIMS))
+str_generator = ...
+GAUSS_STEPS = 0.01
+symmetric_profile_generator = ...
+profile_generator = ...
+phase_generator = ...
+GRID = np.linspace(3.0, 90.0, 4351)
+CUKA1 = [[1.540596, 1]]
+CUKA12 = [[1.540596, 2/3], [1.544493, 1/3]]
+pattern_generator = GenBuilder(
+    classname= core.Pattern,
+    waves = sample_gen([CUKA1, CUKA12]),
+    phases = ([phase] for phase in phase_generator),
+    bkg = bkg_generator,
+    scales = distr_gen(sts.uniform(100,20000), size = 1),
+    bkg_range = (sorted(ii) for
+                 ii in utils.distr_gen(sts.uniform(500, 7000), size = 2)))
+def runner(pattern):
+    return (pattern.report_params(), pattern.pattern(GRID))
+CHANKS = 2
+CHANK_SIZE = 50
+CORES = 4
+for i in range(CHANKS):
+    chank = it.islice(pattern_generator, CHANK_SIZE)
+    pool = mp.Pool(CORES)
+    with pool as p:
+        results = p.map(runner, chank)
+    y = pd.DataFrame( [ y for y,_ in results  ]  )
+    x = pd.DataFrame( [ x for _,x in results  ]  )
+    y.to_csv(f'test_y_{i}.csv')
+    x.to_csv(f'test_x_{i}.csv')
+\end{minted}
+\newpage
+
+\begin{center}
+Приложение 6. Реализация асимметрии максимумов в рентгеновских порошковых дифрактограммах
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+class AxialCorrection:
+    def __init__(self, profile, HL, SL, N_gauss_step):
+        self.L = 1
+        self.H = HL
+        self.S = SL
+        self.N_gauss_step = N_gauss_step
+        self.profile = profile
+    def h(self, phi, peak):
+        return self.L*np.sqrt(np.cos(phi*np.pi/180)**2/np.cos(peak*np.pi/180)**2 - 1)
+    def phi_min(self, peak):
+        a = np.cos(peak*np.pi/180) * np.sqrt( ((self.H+self.S)/self.L)**2 + 1 )
+        if a > 1 :
+            return 0
+        else:
+            return 180/np.pi*np.arccos( a )
+    def phi_infl(self, peak):
+        a = np.cos(peak*np.pi/180)*np.sqrt( ((self.H-self.S)/self.L)**2 + 1 )
+        if a > 1 :
+            return 0
+        else:
+            return 180/np.pi*np.arccos(a)
+    def W2(self, phis, peak):
+        result = np.zeros(len(phis))
+        cond1 = (self.phi_min(peak) <= phis) & (phis <= self.phi_infl(peak))
+        result[cond1] = self.H + self.S - self.h(phis[cond1], peak)
+        cond2 = (phis > self.phi_infl(peak)) & (phis <= peak)
+        result[cond2] = 2 * min(self.H, self.S)
+        return result
+    def calc(self, Th2, peak):
+        phmin = self.phi_min(peak)
+        dd = np.abs(peak - phmin) / self.N_gauss_step
+        N_gauss = np.ceil(dd).astype(int)
+        if (N_gauss == 1):
+            return self.profile.calc(Th2, peak)
+        xn, wn = np.polynomial.legendre.leggauss(N_gauss)
+        step = Th2[1] -Th2[0]
+        deltan = (peak+phmin)/2 + (peak-phmin)*xn/2
+        tmp_assy = np.zeros(len(Th2))
+        arr1 = wn*self.W2(deltan, peak)/self.h(deltan, peak)/np.cos(deltan*np.pi/180)
+        for dn in range(len(deltan)):
+            tmp_assy += arr1[dn] * self.profile.calc(Th2, deltan[dn])
+        tmp_assy = tmp_assy / np.sum(arr1)
+        return(tmp_assy)
+\end{minted}
+\newpage
+
+\begin{center}
+Приложение 7. Реализация функции Псевдо-Войдта
+\end{center}
+\begin{minted}[
+frame=lines,
+framesep=1.5mm,
+baselinestretch=1.2,
+bgcolor=LightGray,
+fontsize=\footnotesize,
+linenos
+]{python}
+class PV_TCHZ:
+    def __init__(self, parameters):
+        self.U = parameters[0] / 1083  # Follow GSAS conventions
+        self.V = parameters[1] / 1083  # Follow GSAS conventions
+        self.W = parameters[2] / 1083  # Follow GSAS conventions
+        self.X = parameters[3] / 100   # Follow GSAS conventions
+        self.Y = parameters[4] / 100   # Follow GSAS conventions
+        self.Z = parameters[5] / 100   # Follow GSAS conventions
+    def fwhmL(self, peak):
+        peak = peak / 180 * np.pi
+        return (self.X * np.tan(peak/2) + self.Y/np.cos(peak/2))
+    def fwhmG(self, peak):
+        peak = peak / 180 * np.pi
+        return np.sqrt(self.U * np.tan(peak/2) ** 2 +
+                       self.V * np.tan(peak/2) +
+                       self.W +
+                       self.Z / np.cos(peak/2) ** 2)
+    def lorenz(self, Th2, peak, l):
+        return (2 / np.pi / l) / (1 + 4 * (Th2 - peak)**2 / l**2)
+    def gauss(self, Th2, peak, g):
+        return (2 * (np.log(2)/np.pi) ** 0.5 / g) *
+         np.exp(-4 * np.log(2) * (Th2 - peak)**2 / g**2)
+    def n_for_tchz(self, l, g):
+        G = g ** 5 + 2.69269*g ** 4 * l + 2.42843 * g ** 3 * l ** 2 + 
+        4.47163 * g ** 2 * l ** 3
+        G += 0.07842 * g * l ** 4 + l ** 5
+        G = l / (G ** 0.2)
+        n = 1.36603 * G - 0.47719 * G ** 2 + 0.11116 * G ** 3
+        return n
+    def tchz(self, Th2, peak, l, g, n):
+        return n* self.lorenz(Th2, peak, l) + (1 - n)* self.gauss(Th2, peak, g)
+    def calc(self, Th2, peak):
+        wl = self.fwhmL(peak)
+        wg = self.fwhmG(peak)
+        n = self.n_for_tchz(wl, wg)
+        return self.tchz(Th2, peak, wl, wg, n)
+\end{minted}
+\newpage
