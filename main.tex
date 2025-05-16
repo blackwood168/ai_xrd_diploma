@@ -11,6 +11,7 @@
 \usepackage{indentfirst}
 \usepackage[unicode=true]{hyperref}
 \usepackage{multirow}
+\usepackage{chngcntr}
 \usepackage{array}	
 %\addto\captionsrussian{\def\refname{Список литературы}}
 \usepackage[dvips]{graphicx}
@@ -38,9 +39,9 @@ pdftitle={Diploma},
 \geometry{top=2cm}
 \geometry{bottom=2cm}
 \linespread{1.5}
-\numberwithin{equation}{section}
-\numberwithin{figure}{section}
-\numberwithin{table}{section}
+%\numberwithin{equation}{section}
+%\numberwithin{figure}{section}
+%\numberwithin{table}{section}
 
 \setcounter{tocdepth}{4}
 \setcounter{secnumdepth}{4}
@@ -56,8 +57,12 @@ pdftitle={Diploma},
 %\usepackage{polyglossia}
 %\setdefaultlanguage{russian}
 \usepackage{subcaption}
+\counterwithout{figure}{section}
+\counterwithout{table}{section}
+\renewcommand{\labelenumii}{\arabic{enumi}.\arabic{enumii}.} % Сквозная нумерация
 \renewcommand{\thesubfigure}{(\asbuk{subfigure})}
 \begin{document}
+\selectlanguage{russian}
 \righthyphenmin=20
 \renewcommand{\figurename}{Рисунок}
 \input{title}
